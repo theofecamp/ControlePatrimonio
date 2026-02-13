@@ -34,3 +34,20 @@ ipcMain.handle("writeFile", (Event, row) => {
 ipcMain.handle("readFile", () => {
     return readData();
 });
+
+ipcMain.handle("editFile", (Event, oldId, oldDescription, newData) => {
+    let data = readData();
+
+    data.forEach(row => {
+        if (row.id == oldId && row.description == oldDescription) {
+            row.id = newData.id;
+            row.acquiringDate = newData.acquiringDate;
+            row.nf = newData.nf;
+            row.supplier = newData.supplier;
+            row.description = newData.description;
+            row.baseValue = newData.baseValue;
+        }
+    });
+
+    fs.writeFileSync("data.txt", JSON.stringify(data, null, 2));
+})
