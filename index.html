@@ -1,71 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Patrimônio</title>
-    <link rel="stylesheet" href="index.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Montserrat:ital,wght@0,699;1,699&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
-    </style>
-</head>
-<body>
-    <h1 class="bebas-neue-regular">CONTROLE DE PATRIMÔNIO</h1>
-    <main>
-        <ul id="summary-cards">
-            <li class="info-card roboto-mono-cards">
-                <h4>VALOR TOTAL</h4>
-                <h3>R$ VALOR 1</h3>
-            </li>
-            <li class="info-card roboto-mono-cards">
-                <h4>VALOR DA BAIXA</h4>
-                <h3>R$ VALOR 2</h3>
-            </li>
-            <li class="info-card roboto-mono-cards">
-                <h4>VALOR ATUAL</h4>
-                <h3>R$ (VALOR 1 - VALOR 2)</h3>
-            </li>
-        </ul>
-        <button id="open-add-window-btn" class="add-edit">Adicionar</button><br>
-        <div id="add-item-window">
-            <label for="item-id">Nº ID:</label>
-            <input type="number" id="item-id"><br><br>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Controle de Patrimônio</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <header>
+            <img id="logo-aprbh" src="imgs/logo_APRBH.png">
+            <h1 id="aprbh-text" class="bebas-neue-regular">Associação dos Produtores Rurais que Comercializam Diretamente na RMBH</h1>
+        </header>
+        <h1 id="app-title" class="bebas-neue-regular">CONTROLE DE PATRIMÔNIO</h1>
+        <img id="logo-panelinhas" src="imgs/logo_panelinhas.png">
+        <h1 class="playwrite-at-project">Projeto Social Panelinha's</h1>
+        <main>
+            <ul id="summary-cards">
+                <li class="info-card roboto-mono-cards">
+                    <h4>VALOR TOTAL</h4>
+                    <h3 id="total-value"></h3>
+                </li>
+                <li class="info-card roboto-mono-cards">
+                    <h4>VALOR DA BAIXA</h4>
+                    <h3 id="lost-value"></h3>
+                </li>
+                <li class="info-card roboto-mono-cards">
+                    <h4>VALOR ATUAL</h4>
+                    <h3 id="current-value"></h3>
+                </li>
+            </ul>
+            <button id="open-add-window-btn" class="add-edit">Adicionar</button><br>
+            <div id="add-item-window">
+                <label for="item-id">Nº ID:</label>
+                <input type="number" id="item-id"><br><br>
 
-            <label for="item-acquiring-date">Data de aquisição:</label>
-            <input type="date" id="item-acquiring-date"><br><br>
-            
-            <label for="item-nf-number">Número da nota fiscal:</label>
-            <input type="number" id="item-nf-number"><br><br>
+                <label for="item-acquiring-date">Data de aquisição:</label>
+                <input type="date" id="item-acquiring-date"><br><br>
+                
+                <label for="item-nf-number">Número da nota fiscal:</label>
+                <input type="number" id="item-nf-number"><br><br>
 
-            <label for="item-supplier">Fornecedor</label>
-            <input type="text" id="item-supplier"><br><br>
+                <label for="item-supplier">Fornecedor</label>
+                <input type="text" id="item-supplier"><br><br>
 
-            <label for="item-description">Descrição do item:</label>
-            <input type="text" id="item-description"><br><br>
+                <label for="item-description">Descrição do item:</label>
+                <input type="text" id="item-description"><br><br>
 
-            <label for="item-base-value">Valor base (de aquisição)</label>
-            <input type="number" id="item-base-value"><br><br>
+                <label for="item-base-value">Valor base (de aquisição)</label>
+                <input type="number" id="item-base-value"><br><br>
 
-            <button id="add-item-btn">Adicionar item</button>
-        </div>
-        <table>
-            <caption>ITENS ADQUIRIDOS</caption>
-            <thead id="table-head">
-                <tr id="table-header">
-                    <th>Nº ID</th>
-                    <th>Data de aquisição</th>
-                    <th>Nº NF</th>
-                    <th>Fornecedor</th>
-                    <th>Descrição</th>
-                    <th>Valor base</th>
-                    <th>Baixa</th>
-                    <th>Editar</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-            </tbody>
-        </table>
-    </main>
-    <script src="buttons.js"></script>
-</body>
+                <button id="add-item-btn">Adicionar item</button>
+            </div>
+            <table class="roboto-condensed-table">
+                <caption>RELAÇÃO DOS BENS PATRIMONIAIS</caption>
+                <thead id="table-head">
+                    <tr id="table-header">
+                        <th>Nº ID</th>
+                        <th>Data de aquisição</th>
+                        <th>Nº NF</th>
+                        <th>Fornecedor</th>
+                        <th>Descrição</th>
+                        <th>Valor base</th>
+                        <th>Baixa</th>
+                        <th>Editar</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                </tbody>
+            </table>
+        </main>
+        <script src="buttons.js"></script>
+    </body>
 </html>

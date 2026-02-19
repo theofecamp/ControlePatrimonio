@@ -10,10 +10,22 @@ app.on('ready', () => {
             preload: path.join(__dirname, "preload.js")
         },
         width: 700,
-        height: 400,
+        height: 400
     });
 
     mainWindow.loadURL(`File://${__dirname}/index.html`);
+})
+
+ipcMain.handle("openWriteOffWindow", () => {
+    writeOffWindow = new BrowserWindow({
+        webPreferences: {
+            preload: path.join(__dirname, "preload.js")
+        },
+        width: 700,
+        height: 460
+    });
+
+    writeOffWindow.loadURL(`File://${__dirname}/writeOffWindow.html`);
 })
 
 function readData() {
@@ -46,6 +58,20 @@ ipcMain.handle("editFile", (Event, oldId, oldDescription, newData) => {
             row.supplier = newData.supplier;
             row.description = newData.description;
             row.baseValue = newData.baseValue;
+        }
+    });
+
+    fs.writeFileSync("data.txt", JSON.stringify(data, null, 2));
+})
+
+ipcMain.handle("writeOff", (Event, itemId, itemDescription, writeOffData) => {
+    let data = readData();
+
+    data.forEach(row => {
+        if (row.id == itemId && row.description == itemDescription) {
+            row.writtenOff = 1;
+            row.writeOffDate = writeOffData.date;
+            row.writeOffDescription = writeOffData.description;
         }
     });
 

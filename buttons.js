@@ -1,7 +1,56 @@
+async function displayInfoCards() {
+    let totalValueDisplay = document.getElementById('total-value');
+    let totalValue = 0;
+
+    let lostValueDisplay = document.getElementById('lost-value');
+    let lostValue = 0;
+
+    let currentValueDisplay = document.getElementById('current-value');
+    let currentValue = 0;
+
+    const data = await window.fileAPI.readFile();
+
+    data.forEach(row => {
+        console.log(totalValue);
+        console.log(lostValue); 
+        console.log(currentValue);
+
+        totalValue += parseFloat(row.baseValue);
+
+        if (row.writtenOff == 1)
+            lostValue += parseFloat(row.baseValue);
+        else
+            currentValue += parseFloat(row.baseValue);
+    });
+
+    const totalValueBR = totalValue.toLocaleString('pt-BR', {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    totalValueDisplay.innerHTML = `R$ ${totalValueBR}`;
+
+    const lostValueBR = lostValue.toLocaleString('pt-BR', {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    lostValueDisplay.innerHTML = `R$ ${lostValueBR}`;
+
+    const currentValueBR = currentValue.toLocaleString('pt-BR', {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    currentValueDisplay.innerHTML = `R$ ${currentValueBR}`;
+}
+
+document.addEventListener('DOMContentLoaded', displayInfoCards);
+
 let addButton = document.querySelector("#open-add-window-btn");
 let isAdding = true;
 
-addButton.addEventListener('click', () => {
+function openCloseAddItemTab() {
     let addItemWindow = document.querySelector("#add-item-window");
     if (isAdding) {
         addItemWindow.style.display = 'inline-block';
@@ -16,22 +65,38 @@ addButton.addEventListener('click', () => {
     }
 
     isAdding = !isAdding;
-})
+}
+
+addButton.addEventListener('click', openCloseAddItemTab);
 
 let addItemButton = document.getElementById('add-item-btn');
 
 addItemButton.addEventListener('click', async () => {
+    let itemId = document.getElementById('item-id').value;
+    let itemAcquiringDate = document.getElementById('item-acquiring-date').value;
+    let itemNfNumber = document.getElementById('item-nf-number').value;
+    let itemSupplier = document.getElementById('item-supplier').value;
+    let itemDescription = document.getElementById('item-description').value;
+    let itemBaseValue = document.getElementById('item-base-value').value;
+
     const data = {
-        id: document.getElementById('item-id').value,
-        acquiringDate: document.getElementById('item-acquiring-date').value,
-        nf: document.getElementById('item-nf-number').value,
-        supplier: document.getElementById('item-supplier').value,
-        description: document.getElementById('item-description').value,
-        baseValue: document.getElementById('item-base-value').value
+        id: itemId,
+        acquiringDate: itemAcquiringDate,
+        nf: itemNfNumber,
+        supplier: itemSupplier,
+        description: itemDescription,
+        baseValue: itemBaseValue,
+        writtenOff: 0,
+        writeOffDate: "",
+        writeOffDescription: ""
     }
+
+    openCloseAddItemTab();
 
     await window.fileAPI.writeFile(data);
     loadTable();
+
+    displayInfoCards();
 })
 
 async function loadTable() {
@@ -43,18 +108,26 @@ async function loadTable() {
     rows.forEach(row => {
         let tr = document.createElement('tr');
         tr.classList.add("item-row");
+        tr.classList.add("in-use");
 
         tr.innerHTML = `
-        <td>${row.id}</td>
+        <td id="row-id">${row.id}</td>
         <td>${row.acquiringDate}</td>
         <td>${row.nf}</td>
         <td>${row.supplier}</td>
-        <td>${row.description}</td>
+        <td id="row-description">${row.description}</td>
         <td>${row.baseValue}</td>
         <td><button id="write-off-btn" class="add-edit table-btns">Baixar</button></td>
         <td><button id="edit-row-btn" class="add-edit table-btns unactive">Editar</button></td>`;
 
         tbody.appendChild(tr);
+
+        let rowCells = tr.children;
+
+        if (row.writtenOff == "1") {
+            rowCells[6].querySelector('button').style.backgroundColor = "#f30909";
+            rowCells[6].querySelector('button').innerHTML = "Baixado";
+        }
     });
 }
 
@@ -63,7 +136,7 @@ loadTable();
 const tbody = document.getElementById('table-body');
 
 tbody.addEventListener('click', function(e) {
-    if (e.target.classList.contains('add-edit'))
+    if (e.target.id == "edit-row-btn")
         editRow(e.target);
 });
 
@@ -93,10 +166,8 @@ function editRow(button) {
         button.textContent = 'Confirmar';
         button.classList.remove('unactive');
         button.classList.add('active');
-    } else if (button.classList.contains('active')) {
+    } else if (button.classList.contains('active'))
         changeRow(button);
-    }
-    
 }
 
 async function changeRow(button) {
@@ -128,4 +199,22 @@ async function changeRow(button) {
     const oldDescription = button.dataset.oldDescription;
 
     await window.fileAPI.editFile(oldId, oldDescription, newData);
+}
+
+tbody.addEventListener('click', function(e) {
+    if (e.target.id == "write-off-btn")
+        openWriteOffWindow(e.target);
+})
+
+async function openWriteOffWindow(button) {
+    const currRow = button.closest('tr');
+    const rowCells = currRow.children
+
+    const itemId = rowCells[0].textContent;
+    const itemDescription = rowCells[4].textContent;
+
+    localStorage.setItem("tempItemId", itemId);
+    localStorage.setItem("tempItemDescription", itemDescription);
+
+    await window.fileAPI.openWriteOffWindow();
 }
